@@ -1,7 +1,8 @@
 version: '3'
 services:
   mysql:
-    image: mysql:8
+    image: mysql:latest
+    container_name: "mysql"
     tmpfs:
       - /var/lib/mysql:rw
     environment:
@@ -13,9 +14,23 @@ services:
       - main
     ports:
       - "3306:3306"
+      
+  postgres:
+    image: postgres:latest
+    container_name: "postgres"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - TZ=UTC
+    volumes:
+      - "./data/postgres:/var/lib/postgresql/data"
+    ports:
+      - 5432:5432
 
   jaeger:
     image: 'jaegertracing/all-in-one:latest'
+    container_name: "jaeger"
     ports:
       - '127.0.0.1:5775:5775/udp'
       - '127.0.0.1:6831:6831/udp'
@@ -26,21 +41,25 @@ services:
   
   zipkin:
     image: openzipkin/zipkin
+    container_name: "zipkin"
     ports:
       - '9411:9411'
 
   redis:
     image: redis:alpine
+    container_name: "redis"
     ports:
       - '6379:6379'
 
   sqs:
     image: vsouza/sqs-local
+    container_name: "sqs"
     ports:
       - '9324:9324'
 
   dynamo:
     image: 'amazon/dynamodb-local'
+    container_name: "dynamo"
     ports:
       - '8000:8000'
       
